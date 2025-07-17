@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	// Load .env
+	// Load file .env
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("❌ Gagal load file .env")
 	}
@@ -23,14 +23,14 @@ func main() {
 	// Inisialisasi Fiber
 	app := fiber.New()
 
-	// Middleware: Logger & CORS
+	// Middleware global
 	app.Use(middleware.LoggerMiddleware())
 	app.Use(middleware.CorsMiddleware())
 
-	// Setup routes
+	// Semua route (termasuk auth/login/register)
 	routes.SetupRoutes(app)
 
-	// Port dari .env
+	// Port server
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "3000"

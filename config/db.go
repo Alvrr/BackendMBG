@@ -54,3 +54,6 @@ func ConnectDB() {
 
 	fmt.Println("✅ ProdukCollection initialized:", ProdukCollection != nil)
 }
+func GetCollection(name string) *mongo.Collection {
+	return DB.Collection(name)
+}
