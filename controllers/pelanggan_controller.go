@@ -88,11 +88,11 @@ func UpdatePelanggan(c *fiber.Ctx) error {
 		})
 	}
 
-	// ✅ Validasi input
-	if err := utils.Validate.Struct(pelanggan); err != nil {
+	// ✅ Validasi input - pastikan field required tidak kosong
+	if pelanggan.Nama == "" || pelanggan.Email == "" || pelanggan.NoHP == "" || pelanggan.Alamat == "" {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
 			"message": "Validasi gagal",
-			"error":   err.Error(),
+			"error":   "Nama, email, no HP, dan alamat wajib diisi",
 		})
 	}
 

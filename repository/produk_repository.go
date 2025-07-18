@@ -64,10 +64,16 @@ func UpdateProduk(id string, p models.Produk) (*mongo.UpdateResult, error) {
 	defer cancel()
 
 	update := bson.M{
-		"$set": p,
+		"$set": bson.M{
+			"nama_produk": p.NamaProduk,
+			"kategori":    p.Kategori,
+			"harga":       p.Harga,
+			"stok":        p.Stok,
+			"deskripsi":   p.Deskripsi,
+		},
 	}
 
-	return produkCol().UpdateByID(ctx, id, update)
+	return produkCol().UpdateOne(ctx, bson.M{"_id": id}, update)
 }
 
 func DeleteProduk(id string) (*mongo.DeleteResult, error) {

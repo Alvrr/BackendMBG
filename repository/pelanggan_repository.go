@@ -60,8 +60,16 @@ func UpdatePelanggan(id string, p models.Pelanggan) (*mongo.UpdateResult, error)
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	update := bson.M{"$set": p}
-	return pelangganCol().UpdateByID(ctx, id, update)
+	update := bson.M{
+		"$set": bson.M{
+			"nama":   p.Nama,
+			"email":  p.Email,
+			"no_hp":  p.NoHP,
+			"alamat": p.Alamat,
+		},
+	}
+
+	return pelangganCol().UpdateOne(ctx, bson.M{"_id": id}, update)
 }
 
 func DeletePelanggan(id string) (*mongo.DeleteResult, error) {

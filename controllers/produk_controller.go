@@ -92,14 +92,11 @@ func UpdateProduk(c *fiber.Ctx) error {
 		})
 	}
 
-	// Hapus field ID agar tidak ikut di-update (hindari error immutable _id)
-	produk.ID = ""
-
-	// ✅ Validasi input
-	if err := utils.Validate.Struct(produk); err != nil {
+	// ✅ Validasi input - pastikan field required tidak kosong
+	if produk.NamaProduk == "" || produk.Kategori == "" || produk.Harga <= 0 || produk.Stok < 0 {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
 			"message": "Validasi gagal",
-			"error":   err.Error(),
+			"error":   "Nama produk, kategori, harga (>0), dan stok (>=0) wajib diisi",
 		})
 	}
 
