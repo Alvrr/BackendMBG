@@ -4,9 +4,7 @@ import (
 	"backend/models"
 	"backend/repository"
 	"backend/utils"
-
 	"strings"
-
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -27,7 +25,7 @@ func Register(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Role harus admin, kasir, atau driver"})
 	}
 
-	// Generate ID berdasarkan role
+	// Generate ID otomatis dari counters.go (jangan ambil dari frontend)
 	id, err := repository.GenerateID(role)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Gagal membuat ID user"})
@@ -65,12 +63,18 @@ func Login(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Email atau password salah"})
 	}
 
+	// Cek status aktif/nonaktif
+	if user.Status != "aktif" {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Akun karyawan nonaktif, tidak dapat login"})
+	}
+
 	// Bandingkan password plaintext dan hashed
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password)); err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Email atau password salah"})
 	}
 
-	token, err := utils.GenerateToken(user.ID, user.Role)
+	// ✅ Perbaikan: tambahkan user.Nama
+	token, err := utils.GenerateToken(user.ID, user.Role, user.Nama)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Gagal membuat token"})
 	}

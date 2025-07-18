@@ -92,6 +92,9 @@ func UpdateProduk(c *fiber.Ctx) error {
 		})
 	}
 
+	// Hapus field ID agar tidak ikut di-update (hindari error immutable _id)
+	produk.ID = ""
+
 	// ✅ Validasi input
 	if err := utils.Validate.Struct(produk); err != nil {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{

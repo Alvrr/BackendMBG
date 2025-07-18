@@ -5,8 +5,6 @@ import (
 	"backend/models"
 	"bytes"
 	"context"
-	"strconv"
-	"strings"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -29,8 +27,8 @@ func ExportLaporanExcel(c *fiber.Ctx) error {
 	f.SetSheetName("Sheet1", sheet)
 
 	// Header
-	headers := []string{"ID Transaksi", "Nama Pelanggan", "Produk", "Total Bayar", "Tanggal"}
-	columns := []string{"A", "B", "C", "D", "E"}
+	headers := []string{"ID Transaksi", "Nama Pembeli", "Nama Kasir", "Nama Driver", "Produk", "Qty", "Harga", "Subtotal", "Tanggal"}
+	columns := []string{"A", "B", "C", "D", "E", "F", "G", "H", "I"}
 
 	// ✅ Buat style header (bold + center + background)
 	headerStyle, _ := f.NewStyle(&excelize.Style{
@@ -61,34 +59,32 @@ func ExportLaporanExcel(c *fiber.Ctx) error {
 			continue
 		}
 
-		// Ambil pelanggan
+		// Ambil nama pelanggan
 		var pelanggan models.Pelanggan
 		err := config.PelangganCollection.FindOne(ctx, bson.M{"_id": bayar.IDPelanggan}).Decode(&pelanggan)
 		if err != nil {
 			pelanggan.Nama = "Tidak ditemukan"
 		}
 
-		// Gabung produk jadi string
-		var produkList []string
+		// Untuk setiap produk, buat baris sendiri
 		for _, item := range bayar.Produk {
-			produkList = append(produkList, item.NamaProduk+" x"+strconv.Itoa(item.Jumlah)+" = "+strconv.Itoa(item.Subtotal))
+			values := []interface{}{
+				bayar.ID,
+				pelanggan.Nama,
+				bayar.NamaKasir,
+				bayar.NamaDriver,
+				item.NamaProduk,
+				item.Jumlah,
+				item.Harga,
+				item.Subtotal,
+				bayar.Tanggal,
+			}
+			for col, val := range values {
+				cell, _ := excelize.CoordinatesToCellName(col+1, row)
+				f.SetCellValue(sheet, cell, val)
+			}
+			row++
 		}
-		produkGabung := strings.Join(produkList, "; ")
-
-		// Data isi per kolom
-		values := []interface{}{
-			bayar.ID,
-			pelanggan.Nama,
-			produkGabung,
-			bayar.TotalBayar,
-			bayar.Tanggal,
-		}
-
-		for col, val := range values {
-			cell, _ := excelize.CoordinatesToCellName(col+1, row)
-			f.SetCellValue(sheet, cell, val)
-		}
-		row++
 	}
 
 	// Lebar kolom otomatis

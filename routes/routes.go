@@ -10,4 +10,6 @@ func SetupRoutes(app *fiber.App) {
 	PembayaranRoutes(app)
 	LaporanRoutes(app)
 	AuthRoutes(app)
+	UserRoutes(app)
+	RiwayatRoutes(app)
 }

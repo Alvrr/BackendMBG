@@ -8,7 +8,10 @@ type User struct {
 	Email     string    `json:"email" bson:"email"`
 	Password  string    `json:"password,omitempty" bson:"password"`
 	Role      string    `json:"role" bson:"role"`
-	CreatedAt time.Time `json:"created_at,omitempty" bson:"created_at"` // ✅ Tambahkan ini
+	NoHP      string    `json:"no_hp,omitempty" bson:"no_hp,omitempty"`
+	Alamat    string    `json:"alamat,omitempty" bson:"alamat,omitempty"`
+	Status    string    `json:"status" bson:"status"` // aktif/nonaktif
+	CreatedAt time.Time `json:"created_at,omitempty" bson:"created_at"`
 }
 
 type LoginInput struct {

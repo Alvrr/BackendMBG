@@ -11,4 +11,7 @@ func AuthRoutes(app *fiber.App) {
 
 	auth.Post("/register", controllers.Register)
 	auth.Post("/login", controllers.Login)
+
+	// Endpoint untuk dropdown driver
+	auth.Get("/drivers", controllers.GetAllDrivers)
 }

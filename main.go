@@ -27,6 +27,14 @@ func main() {
 	app.Use(middleware.LoggerMiddleware())
 	app.Use(middleware.CorsMiddleware())
 
+	// JWTMiddleware global, kecuali untuk /auth/login dan /auth/register
+	app.Use(func(c *fiber.Ctx) error {
+		if c.Path() == "/auth/login" || c.Path() == "/auth/register" {
+			return c.Next()
+		}
+		return middleware.JWTMiddleware(c)
+	})
+
 	// Semua route (termasuk auth/login/register)
 	routes.SetupRoutes(app)
 

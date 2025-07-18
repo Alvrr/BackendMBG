@@ -18,6 +18,7 @@ var (
 	PelangganCollection  *mongo.Collection
 	PembayaranCollection *mongo.Collection
 	CounterCollection    *mongo.Collection
+	UserCollection       *mongo.Collection // 🆕 Tambahkan ini
 )
 
 func ConnectDB() {
@@ -51,9 +52,11 @@ func ConnectDB() {
 	PelangganCollection = DB.Collection("pelanggan")
 	PembayaranCollection = DB.Collection("pembayaran")
 	CounterCollection = DB.Collection("counters")
+	UserCollection = DB.Collection("user") // 🆕 Tambahkan ini
 
-	fmt.Println("✅ ProdukCollection initialized:", ProdukCollection != nil)
+	fmt.Println("✅ Semua koleksi berhasil diinisialisasi")
 }
+
 func GetCollection(name string) *mongo.Collection {
 	return DB.Collection(name)
 }

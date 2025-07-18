@@ -1,0 +1,25 @@
+package controllers
+
+import (
+	"backend/repository"
+
+	"github.com/gofiber/fiber/v2"
+)
+
+// GET /riwayat
+func GetRiwayatPembayaran(c *fiber.Ctx) error {
+	role := c.Locals("userRole").(string)
+	id := c.Locals("userID").(string)
+	filter := map[string]interface{}{}
+	if role == "driver" {
+		filter["id_driver"] = id
+	}
+	data, err := repository.GetRiwayatPembayaran(filter)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Gagal ambil riwayat pembayaran",
+			"error":   err.Error(),
+		})
+	}
+	return c.JSON(data)
+}
