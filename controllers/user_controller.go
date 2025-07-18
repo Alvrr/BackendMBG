@@ -56,6 +56,17 @@ func CreateKaryawan(c *fiber.Ctx) error {
 	if err := c.BodyParser(&user); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "Request tidak valid"})
 	}
+
+	// Generate ID untuk user
+	newID, err := repository.GenerateID("userid")
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Gagal generate ID user",
+			"error":   err.Error(),
+		})
+	}
+	user.ID = newID
+
 	// Set default status aktif jika kosong
 	if user.Status == "" {
 		user.Status = "aktif"
@@ -69,7 +80,7 @@ func CreateKaryawan(c *fiber.Ctx) error {
 		user.Password = string(hashed)
 	}
 	user.CreatedAt = time.Now()
-	_, err := repository.CreateKaryawan(user)
+	_, err = repository.CreateKaryawan(user)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Gagal menambah karyawan"})
 	}
@@ -106,6 +117,17 @@ func RegisterKaryawan(c *fiber.Ctx) error {
 	if err := c.BodyParser(&user); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "Request tidak valid"})
 	}
+
+	// Generate ID untuk user
+	newID, err := repository.GenerateID("userid")
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Gagal generate ID user",
+			"error":   err.Error(),
+		})
+	}
+	user.ID = newID
+
 	// Set default status aktif
 	user.Status = "aktif"
 	// Hash password
@@ -117,7 +139,7 @@ func RegisterKaryawan(c *fiber.Ctx) error {
 		user.Password = string(hashed)
 	}
 	user.CreatedAt = time.Now()
-	_, err := repository.CreateKaryawan(user)
+	_, err = repository.CreateKaryawan(user)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Gagal register karyawan"})
 	}

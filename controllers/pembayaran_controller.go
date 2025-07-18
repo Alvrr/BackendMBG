@@ -117,6 +117,18 @@ func CreatePembayaran(c *fiber.Ctx) error {
 				"message": "Driver wajib dipilih untuk pengiriman motor/mobil",
 			})
 		}
+
+		// Cari ID driver berdasarkan nama
+		var driver models.User
+		err := config.UserCollection.FindOne(context.Background(), bson.M{
+			"nama":   pembayaran.NamaDriver,
+			"role":   "driver",
+			"status": "aktif",
+		}).Decode(&driver)
+		if err == nil {
+			pembayaran.IDDriver = driver.ID
+		}
+
 		if pembayaran.JenisPengiriman == "motor" {
 			pembayaran.Ongkir = 10000
 		} else {
@@ -124,6 +136,7 @@ func CreatePembayaran(c *fiber.Ctx) error {
 		}
 	} else {
 		pembayaran.NamaDriver = "-"
+		pembayaran.IDDriver = ""
 		pembayaran.Ongkir = 0
 	}
 
@@ -142,6 +155,7 @@ func CreatePembayaran(c *fiber.Ctx) error {
 	}
 	pembayaran.ID = id
 	pembayaran.Tanggal = time.Now().Format("2006-01-02 15:04:05")
+	pembayaran.Status = "Pending" // Set status default
 
 	result, err := repository.CreatePembayaran(pembayaran)
 	if err != nil {

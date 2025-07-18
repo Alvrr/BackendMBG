@@ -17,7 +17,7 @@ func FindUserByID(id string) (*models.User, error) {
 	defer cancel()
 
 	collection := config.GetCollection("user")
-	err := collection.FindOne(ctx, bson.M{"id": id}).Decode(&user)
+	err := collection.FindOne(ctx, bson.M{"_id": id}).Decode(&user)
 	if err != nil {
 		return nil, err
 	}

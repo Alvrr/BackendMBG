@@ -62,7 +62,7 @@ func GetKaryawanByID(id string) (*models.User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	var user models.User
-	err := userCol().FindOne(ctx, bson.M{"id": id}).Decode(&user)
+	err := userCol().FindOne(ctx, bson.M{"_id": id}).Decode(&user)
 	if err != nil {
 		return nil, err
 	}
@@ -78,14 +78,30 @@ func CreateKaryawan(user models.User) (*mongo.InsertOneResult, error) {
 func UpdateKaryawan(id string, user models.User) (*mongo.UpdateResult, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	update := bson.M{"$set": user}
-	return userCol().UpdateByID(ctx, id, update)
+
+	update := bson.M{
+		"$set": bson.M{
+			"nama":   user.Nama,
+			"email":  user.Email,
+			"role":   user.Role,
+			"no_hp":  user.NoHP,
+			"alamat": user.Alamat,
+			"status": user.Status,
+		},
+	}
+
+	// Jika password tidak kosong, update juga password
+	if user.Password != "" {
+		update["$set"].(bson.M)["password"] = user.Password
+	}
+
+	return userCol().UpdateOne(ctx, bson.M{"_id": id}, update)
 }
 
 func DeleteKaryawan(id string) (*mongo.DeleteResult, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	return userCol().DeleteOne(ctx, bson.M{"id": id})
+	return userCol().DeleteOne(ctx, bson.M{"_id": id})
 }
 
 // Update status aktif/nonaktif karyawan
@@ -93,7 +109,7 @@ func UpdateKaryawanStatus(id string, status string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	update := bson.M{"$set": bson.M{"status": status}}
-	_, err := userCol().UpdateOne(ctx, bson.M{"id": id}, update)
+	_, err := userCol().UpdateOne(ctx, bson.M{"_id": id}, update)
 	return err
 }
 
