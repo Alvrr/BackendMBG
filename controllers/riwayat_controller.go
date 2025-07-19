@@ -13,6 +13,8 @@ func GetRiwayatPembayaran(c *fiber.Ctx) error {
 	filter := map[string]interface{}{}
 	if role == "driver" {
 		filter["id_driver"] = id
+	} else if role == "kasir" {
+		filter["id_kasir"] = id
 	}
 	data, err := repository.GetRiwayatPembayaran(filter)
 	if err != nil {

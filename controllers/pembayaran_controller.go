@@ -24,6 +24,8 @@ func GetAllPembayaran(c *fiber.Ctx) error {
 	filter := bson.M{}
 	if role == "driver" {
 		filter["id_driver"] = id
+	} else if role == "kasir" {
+		filter["id_kasir"] = id
 	}
 
 	data, err := repository.GetPembayaranFiltered(filter)
