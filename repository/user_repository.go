@@ -69,7 +69,7 @@ func GetKaryawanByID(id string) (*models.User, error) {
 	return &user, nil
 }
 
-func CreateKaryawan(user models.User) (*mongo.InsertOneResult, error) {
+func CreateKaryawan(user *models.User) (*mongo.InsertOneResult, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	return userCol().InsertOne(ctx, user)
@@ -108,9 +108,20 @@ func DeleteKaryawan(id string) (*mongo.DeleteResult, error) {
 func UpdateKaryawanStatus(id string, status string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
+
 	update := bson.M{"$set": bson.M{"status": status}}
-	_, err := userCol().UpdateOne(ctx, bson.M{"_id": id}, update)
-	return err
+	result, err := userCol().UpdateOne(ctx, bson.M{"_id": id}, update)
+
+	if err != nil {
+		return err
+	}
+
+	// Periksa apakah ada dokumen yang diupdate
+	if result.MatchedCount == 0 {
+		return mongo.ErrNoDocuments
+	}
+
+	return nil
 }
 
 // Get all active karyawan (selain admin)

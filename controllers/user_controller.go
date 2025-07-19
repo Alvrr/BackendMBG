@@ -57,8 +57,13 @@ func CreateKaryawan(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "Request tidak valid"})
 	}
 
-	// Generate ID untuk user
-	newID, err := repository.GenerateID("userid")
+	// Validasi role hanya kasir dan driver yang bisa dibuat
+	if user.Role != "kasir" && user.Role != "driver" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "Role harus kasir atau driver"})
+	}
+
+	// Generate ID untuk user berdasarkan role
+	newID, err := repository.GenerateID(user.Role)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"message": "Gagal generate ID user",
@@ -80,7 +85,7 @@ func CreateKaryawan(c *fiber.Ctx) error {
 		user.Password = string(hashed)
 	}
 	user.CreatedAt = time.Now()
-	_, err = repository.CreateKaryawan(user)
+	_, err = repository.CreateKaryawan(&user)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Gagal menambah karyawan"})
 	}
@@ -118,8 +123,13 @@ func RegisterKaryawan(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "Request tidak valid"})
 	}
 
-	// Generate ID untuk user
-	newID, err := repository.GenerateID("userid")
+	// Validasi role hanya kasir dan driver yang bisa dibuat
+	if user.Role != "kasir" && user.Role != "driver" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "Role harus kasir atau driver"})
+	}
+
+	// Generate ID untuk user berdasarkan role
+	newID, err := repository.GenerateID(user.Role)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"message": "Gagal generate ID user",
@@ -139,7 +149,7 @@ func RegisterKaryawan(c *fiber.Ctx) error {
 		user.Password = string(hashed)
 	}
 	user.CreatedAt = time.Now()
-	_, err = repository.CreateKaryawan(user)
+	err = repository.CreateUser(&user)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Gagal register karyawan"})
 	}
@@ -163,20 +173,43 @@ func UpdateKaryawanStatus(c *fiber.Ctx) error {
 	if c.Locals("userRole") != "admin" {
 		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"message": "Akses hanya untuk admin"})
 	}
+
 	id := c.Params("id")
+	if id == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "ID karyawan tidak boleh kosong"})
+	}
+
 	var body struct {
 		Status string `json:"status"`
 	}
 	if err := c.BodyParser(&body); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "Request tidak valid"})
 	}
+
+	// Validasi status hanya boleh aktif atau nonaktif
 	if body.Status != "aktif" && body.Status != "nonaktif" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "Status harus 'aktif' atau 'nonaktif'"})
 	}
-	if err := repository.UpdateKaryawanStatus(id, body.Status); err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Gagal update status karyawan"})
+
+	// Cek apakah karyawan ada terlebih dahulu
+	_, err := repository.GetKaryawanByID(id)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"message": "Karyawan tidak ditemukan"})
 	}
-	return c.JSON(fiber.Map{"message": "Status karyawan berhasil diupdate"})
+
+	// Update status
+	if err := repository.UpdateKaryawanStatus(id, body.Status); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Gagal update status karyawan",
+			"error":   err.Error(),
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "Status karyawan berhasil diupdate",
+		"id":      id,
+		"status":  body.Status,
+	})
 }
 
 // GET /users/karyawan/active

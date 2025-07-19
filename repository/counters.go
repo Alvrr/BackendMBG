@@ -12,6 +12,34 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+// InitializeCounters menginisialisasi counter yang diperlukan jika belum ada
+func InitializeCounters() error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	counters := []map[string]interface{}{
+		{"_id": "admin", "prefix": "ADM", "sequence_value": 0},
+		{"_id": "kasir", "prefix": "KSR", "sequence_value": 0},
+		{"_id": "driver", "prefix": "DRV", "sequence_value": 0},
+		{"_id": "pelanggan", "prefix": "PLG", "sequence_value": 0},
+		{"_id": "produk", "prefix": "PRD", "sequence_value": 0},
+		{"_id": "pembayaran", "prefix": "PMB", "sequence_value": 0},
+	}
+
+	for _, counter := range counters {
+		filter := bson.M{"_id": counter["_id"]}
+		update := bson.M{"$setOnInsert": counter}
+		opts := options.Update().SetUpsert(true)
+
+		_, err := config.CounterCollection.UpdateOne(ctx, filter, update, opts)
+		if err != nil {
+			return fmt.Errorf("gagal inisialisasi counter %s: %v", counter["_id"], err)
+		}
+	}
+
+	return nil
+}
+
 // Fungsi generate ID dengan prefix dan angka urut 3 digit
 func GenerateID(counterID string) (string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)

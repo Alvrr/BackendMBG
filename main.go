@@ -3,6 +3,7 @@ package main
 import (
 	"backend/config"
 	"backend/middleware"
+	"backend/repository"
 	"backend/routes"
 	"log"
 	"os"
@@ -19,6 +20,13 @@ func main() {
 
 	// Koneksi ke MongoDB
 	config.ConnectDB()
+
+	// Inisialisasi counters yang diperlukan
+	if err := repository.InitializeCounters(); err != nil {
+		log.Printf("⚠️ Peringatan: %v", err)
+	} else {
+		log.Println("✅ Counters berhasil diinisialisasi")
+	}
 
 	// Inisialisasi Fiber
 	app := fiber.New()
