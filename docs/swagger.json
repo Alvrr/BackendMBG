@@ -1,7 +1,11 @@
 {
+    "schemes": [
+        "http",
+        "https"
+    ],
     "swagger": "2.0",
     "info": {
-        "description": "API documentation untuk Backend MBG application.\n\n**Sistem Login:**\n- Admin: admin@email.com / password123\n- Kasir: kasir@email.com / password123\n- Driver: driver@email.com / password123\n\n**Authentication:**\n- Semua endpoint (kecuali login) memerlukan Bearer Token\n- Token didapat dari endpoint /auth/login\n- Format: Authorization: Bearer {token}\n\n**Role Permissions:**\n- Admin: Akses penuh ke semua fitur\n- Kasir: CRUD produk, pelanggan, pembayaran, lihat riwayat\n- Driver: Lihat pembayaran assigned, update status selesai, cetak surat jalan",
+        "description": "API documentation untuk Backend MBG application.\n\n**Sistem Login:**\n- Admin: restu129@gmail.com / restu123\n- Kasir: kasir129@gmail.com / 123456\n- Driver: driver129@gmail.com / 123456\n\n**Authentication:**\n- Semua endpoint (kecuali login) memerlukan Bearer Token\n- Token didapat dari endpoint /auth/login\n- Format: Authorization: Bearer {token}\n\n**Role Permissions:**\n- Admin: Akses penuh ke semua fitur\n- Kasir: CRUD produk, pelanggan, pembayaran, lihat riwayat\n- Driver: Lihat pembayaran assigned, update status selesai, cetak surat jalan",
         "title": "Backend MBG API",
         "termsOfService": "http://swagger.io/terms/",
         "contact": {
@@ -34,23 +38,11 @@
                 "parameters": [
                     {
                         "description": "Login credentials",
-                        "name": "credentials",
+                        "name": "user",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
-                            "required": ["email", "password"],
-                            "properties": {
-                                "email": {
-                                    "type": "string",
-                                    "format": "email",
-                                    "example": "admin@email.com"
-                                },
-                                "password": {
-                                    "type": "string",
-                                    "example": "password123"
-                                }
-                            }
+                            "$ref": "#/definitions/models.LoginInput"
                         }
                     }
                 ],
@@ -58,19 +50,897 @@
                     "200": {
                         "description": "Login berhasil",
                         "schema": {
-                            "type": "object"
+                            "type": "object",
+                            "additionalProperties": true
                         }
                     },
                     "400": {
                         "description": "Request tidak valid",
                         "schema": {
-                            "type": "object"
+                            "type": "object",
+                            "additionalProperties": true
                         }
                     },
                     "401": {
                         "description": "Email atau password salah",
                         "schema": {
-                            "type": "object"
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/register": {
+            "post": {
+                "description": "Register user baru",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Register user baru",
+                "parameters": [
+                    {
+                        "description": "User data",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "User berhasil didaftarkan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Request tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "409": {
+                        "description": "Email sudah terdaftar",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/laporan/excel": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Export semua data pembayaran ke file Excel",
+                "produces": [
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                ],
+                "tags": [
+                    "Laporan"
+                ],
+                "summary": "Export laporan ke Excel",
+                "responses": {
+                    "200": {
+                        "description": "File Excel berhasil diexport",
+                        "schema": {
+                            "type": "file"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/pelanggan": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Mengambil semua data pelanggan",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Pelanggan"
+                ],
+                "summary": "Get all customers",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Pelanggan"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Membuat pelanggan baru",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Pelanggan"
+                ],
+                "summary": "Create customer",
+                "parameters": [
+                    {
+                        "description": "Customer data",
+                        "name": "pelanggan",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Pelanggan"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Pelanggan berhasil ditambahkan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Request tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "422": {
+                        "description": "Validasi gagal",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/pelanggan/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Mengambil data pelanggan berdasarkan ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Pelanggan"
+                ],
+                "summary": "Get customer by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Customer ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Pelanggan"
+                        }
+                    },
+                    "404": {
+                        "description": "Pelanggan tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update data pelanggan berdasarkan ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Pelanggan"
+                ],
+                "summary": "Update customer",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Customer ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Customer data",
+                        "name": "pelanggan",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Pelanggan"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Pelanggan berhasil diupdate",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Request tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "422": {
+                        "description": "Validasi gagal",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Hapus pelanggan berdasarkan ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Pelanggan"
+                ],
+                "summary": "Delete customer",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Customer ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Pelanggan berhasil dihapus",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/pembayaran": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Mengambil semua data pembayaran berdasarkan role user",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Pembayaran"
+                ],
+                "summary": "Get all payments",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Pembayaran"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Membuat pembayaran baru",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Pembayaran"
+                ],
+                "summary": "Create payment",
+                "parameters": [
+                    {
+                        "description": "Payment data",
+                        "name": "pembayaran",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Pembayaran"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Pembayaran berhasil dibuat",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Request tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "422": {
+                        "description": "Validasi gagal",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/pembayaran/cetak/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Cetak surat jalan untuk pengiriman",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Pembayaran"
+                ],
+                "summary": "Print delivery note",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Payment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Surat jalan berhasil dicetak",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "403": {
+                        "description": "Akses ditolak",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Data tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/pembayaran/selesaikan/{id}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Menyelesaikan pembayaran (ubah status menjadi selesai)",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Pembayaran"
+                ],
+                "summary": "Complete payment",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Payment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Transaksi berhasil diselesaikan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Transaksi sudah selesai",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "403": {
+                        "description": "Akses ditolak",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Data tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/pembayaran/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Mengambil data pembayaran berdasarkan ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Pembayaran"
+                ],
+                "summary": "Get payment by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Payment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Pembayaran"
+                        }
+                    },
+                    "404": {
+                        "description": "Data tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/produk": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Mengambil semua data produk",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Produk"
+                ],
+                "summary": "Get all products",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.ProdukSwagger"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Membuat produk baru",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Produk"
+                ],
+                "summary": "Create product",
+                "parameters": [
+                    {
+                        "description": "Product data",
+                        "name": "produk",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ProdukInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Produk berhasil ditambahkan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Request tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "422": {
+                        "description": "Validasi gagal",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/produk/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Mengambil data produk berdasarkan ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Produk"
+                ],
+                "summary": "Get product by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Product ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ProdukSwagger"
+                        }
+                    },
+                    "404": {
+                        "description": "Produk tidak ditemukan",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update data produk berdasarkan ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Produk"
+                ],
+                "summary": "Update product",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Product ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Product data",
+                        "name": "produk",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ProdukInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Produk berhasil diupdate",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Request tidak valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "422": {
+                        "description": "Validasi gagal",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Hapus produk berdasarkan ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Produk"
+                ],
+                "summary": "Delete product",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Product ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Produk berhasil dihapus",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/riwayat": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Mengambil riwayat pembayaran berdasarkan role user",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Riwayat"
+                ],
+                "summary": "Get payment history",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Pembayaran"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/users/drivers": {
+            "get": {
+                "description": "Mengambil semua data driver",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Driver"
+                ],
+                "summary": "Get all drivers",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.User"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/users/karyawan": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Mengambil semua data user/karyawan (admin only)",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Karyawan"
+                ],
+                "summary": "Get all users",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.User"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
                         }
                     }
                 }
@@ -78,19 +948,204 @@
         }
     },
     "definitions": {
-        "models.User": {
+        "models.ItemProduk": {
+            "type": "object",
+            "properties": {
+                "harga": {
+                    "type": "integer"
+                },
+                "id_produk": {
+                    "type": "string"
+                },
+                "jumlah": {
+                    "type": "integer"
+                },
+                "nama_produk": {
+                    "type": "string"
+                },
+                "subtotal": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.LoginInput": {
             "type": "object",
             "properties": {
                 "email": {
                     "type": "string"
                 },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Pelanggan": {
+            "type": "object",
+            "required": [
+                "alamat",
+                "email",
+                "nama",
+                "no_hp"
+            ],
+            "properties": {
+                "alamat": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
                 "nama": {
+                    "type": "string"
+                },
+                "no_hp": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Pembayaran": {
+            "type": "object",
+            "required": [
+                "id_pelanggan",
+                "produk"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "id_driver": {
+                    "type": "string"
+                },
+                "id_kasir": {
+                    "type": "string"
+                },
+                "id_pelanggan": {
+                    "type": "string"
+                },
+                "jenis_pengiriman": {
+                    "type": "string"
+                },
+                "nama_driver": {
+                    "type": "string"
+                },
+                "nama_kasir": {
+                    "type": "string"
+                },
+                "ongkir": {
+                    "type": "integer"
+                },
+                "produk": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ItemProduk"
+                    }
+                },
+                "status": {
+                    "type": "string"
+                },
+                "tanggal": {
+                    "type": "string"
+                },
+                "total_bayar": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.ProdukInput": {
+            "type": "object",
+            "required": [
+                "harga",
+                "kategori",
+                "nama_produk",
+                "stok"
+            ],
+            "properties": {
+                "deskripsi": {
+                    "type": "string",
+                    "example": "Air mineral kemasan galon 19 liter"
+                },
+                "harga": {
+                    "type": "integer",
+                    "example": 20000
+                },
+                "kategori": {
+                    "type": "string",
+                    "example": "Minuman"
+                },
+                "nama_produk": {
+                    "type": "string",
+                    "example": "Galon Air Mineral"
+                },
+                "stok": {
+                    "type": "integer",
+                    "example": 100
+                }
+            }
+        },
+        "models.ProdukSwagger": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string",
+                    "example": "2024-01-15T10:30:00Z"
+                },
+                "deskripsi": {
+                    "type": "string",
+                    "example": "Air mineral kemasan galon 19 liter"
+                },
+                "harga": {
+                    "type": "integer",
+                    "example": 20000
+                },
+                "id": {
+                    "type": "string",
+                    "example": "1"
+                },
+                "kategori": {
+                    "type": "string",
+                    "example": "Minuman"
+                },
+                "nama_produk": {
+                    "type": "string",
+                    "example": "Galon Air Mineral"
+                },
+                "stok": {
+                    "type": "integer",
+                    "example": 100
+                }
+            }
+        },
+        "models.User": {
+            "type": "object",
+            "properties": {
+                "alamat": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "nama": {
+                    "type": "string"
+                },
+                "no_hp": {
                     "type": "string"
                 },
                 "password": {
                     "type": "string"
                 },
                 "role": {
+                    "type": "string"
+                },
+                "status": {
+                    "description": "aktif/nonaktif",
                     "type": "string"
                 }
             }

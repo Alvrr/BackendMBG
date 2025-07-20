@@ -11,12 +11,13 @@ import (
 )
 
 // GetAllProduk godoc
+//
 //	@Summary		Get all products
 //	@Description	Mengambil semua data produk
 //	@Tags			Produk
 //	@Security		BearerAuth
 //	@Produce		json
-//	@Success		200	{array}		models.Produk
+//	@Success		200	{array}		models.ProdukSwagger
 //	@Failure		500	{object}	map[string]interface{}	"Internal Server Error"
 //	@Router			/produk [get]
 func GetAllProduk(c *fiber.Ctx) error {
@@ -31,13 +32,14 @@ func GetAllProduk(c *fiber.Ctx) error {
 }
 
 // GetProdukByID godoc
+//
 //	@Summary		Get product by ID
 //	@Description	Mengambil data produk berdasarkan ID
 //	@Tags			Produk
 //	@Security		BearerAuth
 //	@Produce		json
 //	@Param			id	path		string	true	"Product ID"
-//	@Success		200	{object}	models.Produk
+//	@Success		200	{object}	models.ProdukSwagger
 //	@Failure		404	{object}	map[string]interface{}	"Produk tidak ditemukan"
 //	@Router			/produk/{id} [get]
 func GetProdukByID(c *fiber.Ctx) error {
@@ -53,13 +55,14 @@ func GetProdukByID(c *fiber.Ctx) error {
 }
 
 // CreateProduk godoc
+//
 //	@Summary		Create product
 //	@Description	Membuat produk baru
 //	@Tags			Produk
 //	@Security		BearerAuth
 //	@Accept			json
 //	@Produce		json
-//	@Param			produk	body		models.Produk			true	"Product data"
+//	@Param			produk	body		models.ProdukInput		true	"Product data"
 //	@Success		201		{object}	map[string]interface{}	"Produk berhasil ditambahkan"
 //	@Failure		400		{object}	map[string]interface{}	"Request tidak valid"
 //	@Failure		422		{object}	map[string]interface{}	"Validasi gagal"
@@ -109,6 +112,7 @@ func CreateProduk(c *fiber.Ctx) error {
 }
 
 // UpdateProduk godoc
+//
 //	@Summary		Update product
 //	@Description	Update data produk berdasarkan ID
 //	@Tags			Produk
@@ -116,7 +120,7 @@ func CreateProduk(c *fiber.Ctx) error {
 //	@Accept			json
 //	@Produce		json
 //	@Param			id		path		string					true	"Product ID"
-//	@Param			produk	body		models.Produk			true	"Product data"
+//	@Param			produk	body		models.ProdukInput		true	"Product data"
 //	@Success		200		{object}	map[string]interface{}	"Produk berhasil diupdate"
 //	@Failure		400		{object}	map[string]interface{}	"Request tidak valid"
 //	@Failure		422		{object}	map[string]interface{}	"Validasi gagal"
@@ -154,6 +158,7 @@ func UpdateProduk(c *fiber.Ctx) error {
 }
 
 // DeleteProduk godoc
+//
 //	@Summary		Delete product
 //	@Description	Hapus produk berdasarkan ID
 //	@Tags			Produk

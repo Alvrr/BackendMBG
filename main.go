@@ -20,9 +20,9 @@ import (
 //	@description	API documentation untuk Backend MBG application.
 //	@description
 //	@description	**Sistem Login:**
-//	@description	- Admin: admin@gmail.com / password123
-//	@description	- Kasir: kasir@gmail.com / password123
-//	@description	- Driver: driver@gmail.com / password123
+//	@description	- Admin: restu129@gmail.com / restu123
+//	@description	- Kasir: kasir129@gmail.com / 123456
+//	@description	- Driver: driver129@gmail.com / 123456
 //	@description
 //	@description	**Authentication:**
 //	@description	- Semua endpoint (kecuali login) memerlukan Bearer Token
@@ -95,4 +95,3 @@ func main() {
 	log.Println("🚀 Server jalan di http://localhost:" + port)
 	log.Fatal(app.Listen(":" + port))
 }
-
