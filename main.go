@@ -20,9 +20,9 @@ import (
 //	@description	API documentation untuk Backend MBG application.
 //	@description
 //	@description	**Sistem Login:**
-//	@description	- Admin: admin@email.com / password123
-//	@description	- Kasir: kasir@email.com / password123
-//	@description	- Driver: driver@email.com / password123
+//	@description	- Admin: admin@gmail.com / password123
+//	@description	- Kasir: kasir@gmail.com / password123
+//	@description	- Driver: driver@gmail.com / password123
 //	@description
 //	@description	**Authentication:**
 //	@description	- Semua endpoint (kecuali login) memerlukan Bearer Token
@@ -44,7 +44,7 @@ import (
 
 //	@host		localhost:5000
 //	@BasePath	/
-// @schemes http https
+//  @schemes http https
 
 //	@securityDefinitions.apikey	BearerAuth
 //	@in							header
