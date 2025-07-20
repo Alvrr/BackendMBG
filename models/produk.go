@@ -11,3 +11,4 @@ type Produk struct {
 	Deskripsi  string             `json:"deskripsi" bson:"deskripsi"`
 	CreatedAt  primitive.DateTime `json:"created_at,omitempty" bson:"created_at,omitempty"`
 }
+
