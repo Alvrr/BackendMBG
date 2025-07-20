@@ -12,6 +12,15 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
+// ExportLaporanExcel godoc
+//	@Summary		Export laporan ke Excel
+//	@Description	Export semua data pembayaran ke file Excel
+//	@Tags			Laporan
+//	@Security		BearerAuth
+//	@Produce		application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+//	@Success		200	{file}		binary					"File Excel berhasil diexport"
+//	@Failure		500	{object}	map[string]interface{}	"Internal Server Error"
+//	@Router			/laporan/excel [get]
 func ExportLaporanExcel(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()

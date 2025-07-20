@@ -9,6 +9,16 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// GetAllDrivers godoc
+//
+//	@Summary		Get all drivers
+//	@Description	Mengambil semua data driver
+//	@Tags			Driver
+//	@Produce		json
+//	@Success		200	{array}		models.User
+//	@Failure		500	{object}	map[string]interface{}
+//	@Router			/users/drivers [get]
+//
 // GET /drivers
 func GetAllDrivers(c *fiber.Ctx) error {
 	drivers, err := repository.GetAllDrivers()
@@ -21,6 +31,18 @@ func GetAllDrivers(c *fiber.Ctx) error {
 	return c.JSON(drivers)
 }
 
+// GetAllKaryawan godoc
+//
+//	@Summary		Get all users
+//	@Description	Mengambil semua data user/karyawan (admin only)
+//	@Tags			Karyawan
+//	@Security		BearerAuth
+//	@Produce		json
+//	@Success		200	{array}		models.User
+//	@Failure		403	{object}	map[string]interface{}
+//	@Failure		500	{object}	map[string]interface{}
+//	@Router			/users/karyawan [get]
+//
 // CRUD Karyawan (admin only)
 func GetAllKaryawan(c *fiber.Ctx) error {
 	if c.Locals("userRole") != "admin" {

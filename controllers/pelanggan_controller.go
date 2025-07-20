@@ -8,7 +8,15 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// GET /pelanggan
+// GetAllPelanggan godoc
+//	@Summary		Get all customers
+//	@Description	Mengambil semua data pelanggan
+//	@Tags			Pelanggan
+//	@Security		BearerAuth
+//	@Produce		json
+//	@Success		200	{array}		models.Pelanggan
+//	@Failure		500	{object}	map[string]interface{}	"Internal Server Error"
+//	@Router			/pelanggan [get]
 func GetAllPelanggan(c *fiber.Ctx) error {
 	data, err := repository.GetAllPelanggan()
 	if err != nil {
@@ -20,7 +28,16 @@ func GetAllPelanggan(c *fiber.Ctx) error {
 	return c.JSON(data)
 }
 
-// GET /pelanggan/:id
+// GetPelangganByID godoc
+//	@Summary		Get customer by ID
+//	@Description	Mengambil data pelanggan berdasarkan ID
+//	@Tags			Pelanggan
+//	@Security		BearerAuth
+//	@Produce		json
+//	@Param			id	path		string	true	"Customer ID"
+//	@Success		200	{object}	models.Pelanggan
+//	@Failure		404	{object}	map[string]interface{}	"Pelanggan tidak ditemukan"
+//	@Router			/pelanggan/{id} [get]
 func GetPelangganByID(c *fiber.Ctx) error {
 	id := c.Params("id")
 	pelanggan, err := repository.GetPelangganByID(id)
@@ -33,7 +50,18 @@ func GetPelangganByID(c *fiber.Ctx) error {
 	return c.JSON(pelanggan)
 }
 
-// POST /pelanggan
+// CreatePelanggan godoc
+//	@Summary		Create customer
+//	@Description	Membuat pelanggan baru
+//	@Tags			Pelanggan
+//	@Security		BearerAuth
+//	@Accept			json
+//	@Produce		json
+//	@Param			pelanggan	body		models.Pelanggan		true	"Customer data"
+//	@Success		201			{object}	map[string]interface{}	"Pelanggan berhasil ditambahkan"
+//	@Failure		400			{object}	map[string]interface{}	"Request tidak valid"
+//	@Failure		422			{object}	map[string]interface{}	"Validasi gagal"
+//	@Router			/pelanggan [post]
 func CreatePelanggan(c *fiber.Ctx) error {
 	var pelanggan models.Pelanggan
 
@@ -76,7 +104,19 @@ func CreatePelanggan(c *fiber.Ctx) error {
 	})
 }
 
-// PUT /pelanggan/:id
+// UpdatePelanggan godoc
+//	@Summary		Update customer
+//	@Description	Update data pelanggan berdasarkan ID
+//	@Tags			Pelanggan
+//	@Security		BearerAuth
+//	@Accept			json
+//	@Produce		json
+//	@Param			id			path		string					true	"Customer ID"
+//	@Param			pelanggan	body		models.Pelanggan		true	"Customer data"
+//	@Success		200			{object}	map[string]interface{}	"Pelanggan berhasil diupdate"
+//	@Failure		400			{object}	map[string]interface{}	"Request tidak valid"
+//	@Failure		422			{object}	map[string]interface{}	"Validasi gagal"
+//	@Router			/pelanggan/{id} [put]
 func UpdatePelanggan(c *fiber.Ctx) error {
 	id := c.Params("id")
 	var pelanggan models.Pelanggan
@@ -109,7 +149,16 @@ func UpdatePelanggan(c *fiber.Ctx) error {
 	})
 }
 
-// DELETE /pelanggan/:id
+// DeletePelanggan godoc
+//	@Summary		Delete customer
+//	@Description	Hapus pelanggan berdasarkan ID
+//	@Tags			Pelanggan
+//	@Security		BearerAuth
+//	@Produce		json
+//	@Param			id	path		string					true	"Customer ID"
+//	@Success		200	{object}	map[string]interface{}	"Pelanggan berhasil dihapus"
+//	@Failure		500	{object}	map[string]interface{}	"Internal Server Error"
+//	@Router			/pelanggan/{id} [delete]
 func DeletePelanggan(c *fiber.Ctx) error {
 	id := c.Params("id")
 

@@ -1,0 +1,115 @@
+swagger: "2.0"
+info:
+  description: |-
+    API documentation untuk Backend MBG application.
+
+    **Sistem Login:**
+    - Admin: admin@email.com / password123
+    - Kasir: kasir@email.com / password123
+    - Driver: driver@email.com / password123
+
+    **Authentication:**
+    - Semua endpoint (kecuali login) memerlukan Bearer Token
+    - Token didapat dari endpoint /auth/login
+    - Format: Authorization: Bearer {token}
+
+    **Role Permissions:**
+    - Admin: Akses penuh ke semua fitur
+    - Kasir: CRUD produk, pelanggan, pembayaran, lihat riwayat
+    - Driver: Lihat pembayaran assigned, update status selesai, cetak surat jalan
+  title: Backend MBG API
+  termsOfService: http://swagger.io/terms/
+  contact:
+    name: API Support
+    url: http://www.swagger.io/support
+    email: support@swagger.io
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: "1.0"
+host: localhost:5000
+basePath: /
+paths:
+  /auth/login:
+    post:
+      description: Login user dengan email dan password
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - Authentication
+      summary: Login user
+      parameters:
+        - description: Login data
+          name: credentials
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+              password:
+                type: string
+      responses:
+        "200":
+          description: Login berhasil
+          schema:
+            type: object
+        "400":
+          description: Request tidak valid
+          schema:
+            type: object
+        "401":
+          description: Email atau password salah
+          schema:
+            type: object
+  /auth/register:
+    post:
+      description: Register user baru
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - Authentication
+      summary: Register user baru
+      parameters:
+        - description: User data
+          name: user
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/models.User"
+      responses:
+        "201":
+          description: User berhasil didaftarkan
+          schema:
+            type: object
+        "400":
+          description: Request tidak valid
+          schema:
+            type: object
+        "409":
+          description: Email sudah terdaftar
+          schema:
+            type: object
+definitions:
+  models.User:
+    type: object
+    properties:
+      email:
+        type: string
+      nama:
+        type: string
+      password:
+        type: string
+      role:
+        type: string
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and JWT token.
+    type: apiKey
+    name: Authorization
+    in: header

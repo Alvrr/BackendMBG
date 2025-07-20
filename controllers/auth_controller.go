@@ -11,7 +11,17 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Register handler
+// Register godoc
+//	@Summary		Register user baru
+//	@Description	Register user baru
+//	@Tags			Authentication
+//	@Accept			json
+//	@Produce		json
+//	@Param			user	body		models.User				true	"User data"
+//	@Success		201		{object}	map[string]interface{}	"User berhasil didaftarkan"
+//	@Failure		400		{object}	map[string]interface{}	"Request tidak valid"
+//	@Failure		409		{object}	map[string]interface{}	"Email sudah terdaftar"
+//	@Router			/auth/register [post]
 func Register(c *fiber.Ctx) error {
 	var input models.User
 
@@ -51,7 +61,17 @@ func Register(c *fiber.Ctx) error {
 	})
 }
 
-// Login handler
+// Login godoc
+//	@Summary		Login user
+//	@Description	Login user dengan email dan password
+//	@Tags			Authentication
+//	@Accept			json
+//	@Produce		json
+//	@Param			user	body		models.LoginInput		true	"Login credentials"
+//	@Success		200		{object}	map[string]interface{}	"Login berhasil"
+//	@Failure		400		{object}	map[string]interface{}	"Request tidak valid"
+//	@Failure		401		{object}	map[string]interface{}	"Email atau password salah"
+//	@Router			/auth/login [post]
 func Login(c *fiber.Ctx) error {
 	var input models.LoginInput
 	if err := c.BodyParser(&input); err != nil {

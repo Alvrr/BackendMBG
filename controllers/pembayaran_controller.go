@@ -16,7 +16,15 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// GET /pembayaran
+// GetAllPembayaran godoc
+//	@Summary		Get all payments
+//	@Description	Mengambil semua data pembayaran berdasarkan role user
+//	@Tags			Pembayaran
+//	@Security		BearerAuth
+//	@Produce		json
+//	@Success		200	{array}		models.Pembayaran
+//	@Failure		500	{object}	map[string]interface{}	"Internal Server Error"
+//	@Router			/pembayaran [get]
 func GetAllPembayaran(c *fiber.Ctx) error {
 	role := c.Locals("userRole").(string)
 	id := c.Locals("userID").(string)
@@ -38,7 +46,16 @@ func GetAllPembayaran(c *fiber.Ctx) error {
 	return c.JSON(data)
 }
 
-// GET /pembayaran/:id
+// GetPembayaranByID godoc
+//	@Summary		Get payment by ID
+//	@Description	Mengambil data pembayaran berdasarkan ID
+//	@Tags			Pembayaran
+//	@Security		BearerAuth
+//	@Produce		json
+//	@Param			id	path		string	true	"Payment ID"
+//	@Success		200	{object}	models.Pembayaran
+//	@Failure		404	{object}	map[string]interface{}	"Data tidak ditemukan"
+//	@Router			/pembayaran/{id} [get]
 func GetPembayaranByID(c *fiber.Ctx) error {
 	id := c.Params("id")
 	role := c.Locals("userRole").(string)
@@ -82,7 +99,18 @@ func generatePembayaranID() (string, error) {
 	return fmt.Sprintf("PM%03d", counter.Seq), nil
 }
 
-// POST /pembayaran
+// CreatePembayaran godoc
+//	@Summary		Create payment
+//	@Description	Membuat pembayaran baru
+//	@Tags			Pembayaran
+//	@Security		BearerAuth
+//	@Accept			json
+//	@Produce		json
+//	@Param			pembayaran	body		models.Pembayaran		true	"Payment data"
+//	@Success		201			{object}	map[string]interface{}	"Pembayaran berhasil dibuat"
+//	@Failure		400			{object}	map[string]interface{}	"Request tidak valid"
+//	@Failure		422			{object}	map[string]interface{}	"Validasi gagal"
+//	@Router			/pembayaran [post]
 func CreatePembayaran(c *fiber.Ctx) error {
 	var pembayaran models.Pembayaran
 	if err := c.BodyParser(&pembayaran); err != nil {
@@ -185,7 +213,18 @@ func CreatePembayaran(c *fiber.Ctx) error {
 	})
 }
 
-// PUT /pembayaran/selesaikan/:id
+// SelesaikanPembayaran godoc
+//	@Summary		Complete payment
+//	@Description	Menyelesaikan pembayaran (ubah status menjadi selesai)
+//	@Tags			Pembayaran
+//	@Security		BearerAuth
+//	@Produce		json
+//	@Param			id	path		string					true	"Payment ID"
+//	@Success		200	{object}	map[string]interface{}	"Transaksi berhasil diselesaikan"
+//	@Failure		400	{object}	map[string]interface{}	"Transaksi sudah selesai"
+//	@Failure		403	{object}	map[string]interface{}	"Akses ditolak"
+//	@Failure		404	{object}	map[string]interface{}	"Data tidak ditemukan"
+//	@Router			/pembayaran/selesaikan/{id} [put]
 func SelesaikanPembayaran(c *fiber.Ctx) error {
 	id := c.Params("id")
 	role := c.Locals("userRole").(string)
@@ -223,7 +262,17 @@ func SelesaikanPembayaran(c *fiber.Ctx) error {
 	})
 }
 
-// GET /pembayaran/cetak/:id
+// CetakSuratJalan godoc
+//	@Summary		Print delivery note
+//	@Description	Cetak surat jalan untuk pengiriman
+//	@Tags			Pembayaran
+//	@Security		BearerAuth
+//	@Produce		json
+//	@Param			id	path		string					true	"Payment ID"
+//	@Success		200	{object}	map[string]interface{}	"Surat jalan berhasil dicetak"
+//	@Failure		403	{object}	map[string]interface{}	"Akses ditolak"
+//	@Failure		404	{object}	map[string]interface{}	"Data tidak ditemukan"
+//	@Router			/pembayaran/cetak/{id} [get]
 func CetakSuratJalan(c *fiber.Ctx) error {
 	id := c.Params("id")
 	role := c.Locals("userRole").(string)

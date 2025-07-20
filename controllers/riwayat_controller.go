@@ -6,7 +6,15 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// GET /riwayat
+// GetRiwayatPembayaran godoc
+//	@Summary		Get payment history
+//	@Description	Mengambil riwayat pembayaran berdasarkan role user
+//	@Tags			Riwayat
+//	@Security		BearerAuth
+//	@Produce		json
+//	@Success		200	{array}		models.Pembayaran
+//	@Failure		500	{object}	map[string]interface{}	"Internal Server Error"
+//	@Router			/riwayat [get]
 func GetRiwayatPembayaran(c *fiber.Ctx) error {
 	role := c.Locals("userRole").(string)
 	id := c.Locals("userID").(string)
