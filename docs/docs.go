@@ -892,7 +892,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/models.UserInput"
                         }
                     }
                 ],
@@ -1048,7 +1048,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/models.UserInput"
                         }
                     }
                 ],
@@ -1395,6 +1395,40 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "id": {
+                    "type": "string"
+                },
+                "nama": {
+                    "type": "string"
+                },
+                "no_hp": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "status": {
+                    "description": "aktif/nonaktif",
+                    "type": "string"
+                }
+            }
+        },
+        "models.UserInput": {
+            "type": "object",
+            "required": [
+                "nama",
+                "email",
+                "password",
+                "role",
+                "status"
+            ],
+            "properties": {
+                "alamat": {
+                    "type": "string"
+                },
+                "email": {
                     "type": "string"
                 },
                 "nama": {

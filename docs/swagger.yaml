@@ -139,6 +139,30 @@ definitions:
         description: aktif/nonaktif
         type: string
     type: object
+  models.UserInput:
+    properties:
+      alamat:
+        type: string
+      email:
+        type: string
+      nama:
+        type: string
+      no_hp:
+        type: string
+      password:
+        type: string
+      role:
+        type: string
+      status:
+        description: aktif/nonaktif
+        type: string
+    required:
+    - nama
+    - email
+    - password
+    - role
+    - status
+    type: object
 host: backendmbg-production.up.railway.app
 info:
   contact:
@@ -726,7 +750,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/models.User'
+          $ref: '#/definitions/models.UserInput'
       produces:
       - application/json
       responses:
@@ -837,7 +861,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/models.User'
+          $ref: '#/definitions/models.UserInput'
       produces:
       - application/json
       responses:
