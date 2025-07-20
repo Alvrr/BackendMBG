@@ -689,26 +689,6 @@ paths:
       summary: Get payment history
       tags:
       - Riwayat
-  /users/drivers:
-    get:
-      description: Mengambil semua data driver
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/models.User'
-            type: array
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Get all drivers
-      tags:
-      - Driver
   /users/karyawan:
     get:
       description: Mengambil semua data user/karyawan (admin only)

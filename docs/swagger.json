@@ -824,36 +824,6 @@
                 }
             }
         },
-        "/users/drivers": {
-            "get": {
-                "description": "Mengambil semua data driver",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Driver"
-                ],
-                "summary": "Get all drivers",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.User"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    }
-                }
-            }
-        },
         "/users/karyawan": {
             "get": {
                 "security": [
