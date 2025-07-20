@@ -202,39 +202,6 @@ paths:
       summary: Login user
       tags:
       - Authentication
-  /auth/register:
-    post:
-      consumes:
-      - application/json
-      description: Register user baru
-      parameters:
-      - description: User data
-        in: body
-        name: user
-        required: true
-        schema:
-          $ref: '#/definitions/models.User'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: User berhasil didaftarkan
-          schema:
-            additionalProperties: true
-            type: object
-        "400":
-          description: Request tidak valid
-          schema:
-            additionalProperties: true
-            type: object
-        "409":
-          description: Email sudah terdaftar
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Register user baru
-      tags:
-      - Authentication
   /laporan/excel:
     get:
       description: Export semua data pembayaran ke file Excel
@@ -767,6 +734,231 @@ paths:
       security:
       - BearerAuth: []
       summary: Get all users
+      tags:
+      - Karyawan
+    post:
+      consumes:
+      - application/json
+      description: Menambah karyawan baru (admin only) - kasir atau driver
+      parameters:
+      - description: Data karyawan
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Karyawan berhasil ditambah
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Request tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create new karyawan
+      tags:
+      - Karyawan
+  /users/karyawan/{id}:
+    delete:
+      description: Hapus karyawan berdasarkan ID (admin only)
+      parameters:
+      - description: ID karyawan
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Karyawan berhasil dihapus
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete karyawan
+      tags:
+      - Karyawan
+    get:
+      description: Mengambil data karyawan berdasarkan ID (admin only)
+      parameters:
+      - description: ID karyawan
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get karyawan by ID
+      tags:
+      - Karyawan
+    put:
+      consumes:
+      - application/json
+      description: Update data karyawan berdasarkan ID (admin only)
+      parameters:
+      - description: ID karyawan
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Data karyawan yang diupdate
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Karyawan berhasil diupdate
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Request tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update karyawan
+      tags:
+      - Karyawan
+  /users/karyawan/{id}/status:
+    patch:
+      consumes:
+      - application/json
+      description: Update status karyawan menjadi aktif atau nonaktif (admin only)
+      parameters:
+      - description: ID karyawan
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Status karyawan
+        in: body
+        name: status
+        required: true
+        schema:
+          properties:
+            status:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Status karyawan berhasil diupdate
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Request tidak valid
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Karyawan tidak ditemukan
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update karyawan status
+      tags:
+      - Karyawan
+  /users/karyawan/active:
+    get:
+      description: Mengambil semua data karyawan aktif
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.User'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get all active karyawan
       tags:
       - Karyawan
 schemes:

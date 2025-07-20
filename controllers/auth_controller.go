@@ -11,17 +11,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Register godoc
-//	@Summary		Register user baru
-//	@Description	Register user baru
-//	@Tags			Authentication
-//	@Accept			json
-//	@Produce		json
-//	@Param			user	body		models.User				true	"User data"
-//	@Success		201		{object}	map[string]interface{}	"User berhasil didaftarkan"
-//	@Failure		400		{object}	map[string]interface{}	"Request tidak valid"
-//	@Failure		409		{object}	map[string]interface{}	"Email sudah terdaftar"
-//	@Router			/auth/register [post]
+// Register function (internal use only, tidak ditampilkan di Swagger)
 func Register(c *fiber.Ctx) error {
 	var input models.User
 
@@ -62,6 +52,7 @@ func Register(c *fiber.Ctx) error {
 }
 
 // Login godoc
+//
 //	@Summary		Login user
 //	@Description	Login user dengan email dan password
 //	@Tags			Authentication

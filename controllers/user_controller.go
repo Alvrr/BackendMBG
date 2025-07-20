@@ -58,6 +58,19 @@ func GetAllKaryawan(c *fiber.Ctx) error {
 	return c.JSON(users)
 }
 
+// GetKaryawanByID godoc
+//
+//	@Summary		Get karyawan by ID
+//	@Description	Mengambil data karyawan berdasarkan ID (admin only)
+//	@Tags			Karyawan
+//	@Security		BearerAuth
+//	@Produce		json
+//	@Param			id	path		string	true	"ID karyawan"
+//	@Success		200	{object}	models.User
+//	@Failure		403	{object}	map[string]interface{}
+//	@Failure		404	{object}	map[string]interface{}
+//	@Failure		500	{object}	map[string]interface{}
+//	@Router			/users/karyawan/{id} [get]
 func GetKaryawanByID(c *fiber.Ctx) error {
 	if c.Locals("userRole") != "admin" {
 		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"message": "Akses hanya untuk admin"})
@@ -70,6 +83,20 @@ func GetKaryawanByID(c *fiber.Ctx) error {
 	return c.JSON(user)
 }
 
+// CreateKaryawan godoc
+//
+//	@Summary		Create new karyawan
+//	@Description	Menambah karyawan baru (admin only) - kasir atau driver
+//	@Tags			Karyawan
+//	@Security		BearerAuth
+//	@Accept			json
+//	@Produce		json
+//	@Param			user	body		models.User				true	"Data karyawan"
+//	@Success		201		{object}	map[string]interface{}	"Karyawan berhasil ditambah"
+//	@Failure		400		{object}	map[string]interface{}	"Request tidak valid"
+//	@Failure		403		{object}	map[string]interface{}	"Forbidden"
+//	@Failure		500		{object}	map[string]interface{}	"Internal Server Error"
+//	@Router			/users/karyawan [post]
 func CreateKaryawan(c *fiber.Ctx) error {
 	if c.Locals("userRole") != "admin" {
 		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"message": "Akses hanya untuk admin"})
@@ -114,6 +141,21 @@ func CreateKaryawan(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"message": "Karyawan berhasil ditambah"})
 }
 
+// UpdateKaryawan godoc
+//
+//	@Summary		Update karyawan
+//	@Description	Update data karyawan berdasarkan ID (admin only)
+//	@Tags			Karyawan
+//	@Security		BearerAuth
+//	@Accept			json
+//	@Produce		json
+//	@Param			id		path		string					true	"ID karyawan"
+//	@Param			user	body		models.User				true	"Data karyawan yang diupdate"
+//	@Success		200		{object}	map[string]interface{}	"Karyawan berhasil diupdate"
+//	@Failure		400		{object}	map[string]interface{}	"Request tidak valid"
+//	@Failure		403		{object}	map[string]interface{}	"Forbidden"
+//	@Failure		500		{object}	map[string]interface{}	"Internal Server Error"
+//	@Router			/users/karyawan/{id} [put]
 func UpdateKaryawan(c *fiber.Ctx) error {
 	if c.Locals("userRole") != "admin" {
 		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"message": "Akses hanya untuk admin"})
@@ -178,6 +220,18 @@ func RegisterKaryawan(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"message": "Register karyawan berhasil"})
 }
 
+// DeleteKaryawan godoc
+//
+//	@Summary		Delete karyawan
+//	@Description	Hapus karyawan berdasarkan ID (admin only)
+//	@Tags			Karyawan
+//	@Security		BearerAuth
+//	@Produce		json
+//	@Param			id	path		string					true	"ID karyawan"
+//	@Success		200	{object}	map[string]interface{}	"Karyawan berhasil dihapus"
+//	@Failure		403	{object}	map[string]interface{}	"Forbidden"
+//	@Failure		500	{object}	map[string]interface{}	"Internal Server Error"
+//	@Router			/users/karyawan/{id} [delete]
 func DeleteKaryawan(c *fiber.Ctx) error {
 	if c.Locals("userRole") != "admin" {
 		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"message": "Akses hanya untuk admin"})
@@ -190,7 +244,22 @@ func DeleteKaryawan(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"message": "Karyawan berhasil dihapus"})
 }
 
-// PATCH /users/karyawan/:id/status
+// UpdateKaryawanStatus godoc
+//
+//	@Summary		Update karyawan status
+//	@Description	Update status karyawan menjadi aktif atau nonaktif (admin only)
+//	@Tags			Karyawan
+//	@Security		BearerAuth
+//	@Accept			json
+//	@Produce		json
+//	@Param			id		path		string					true	"ID karyawan"
+//	@Param			status	body		object{status=string}	true	"Status karyawan"
+//	@Success		200		{object}	map[string]interface{}	"Status karyawan berhasil diupdate"
+//	@Failure		400		{object}	map[string]interface{}	"Request tidak valid"
+//	@Failure		403		{object}	map[string]interface{}	"Forbidden"
+//	@Failure		404		{object}	map[string]interface{}	"Karyawan tidak ditemukan"
+//	@Failure		500		{object}	map[string]interface{}	"Internal Server Error"
+//	@Router			/users/karyawan/{id}/status [patch]
 func UpdateKaryawanStatus(c *fiber.Ctx) error {
 	if c.Locals("userRole") != "admin" {
 		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"message": "Akses hanya untuk admin"})
@@ -234,7 +303,16 @@ func UpdateKaryawanStatus(c *fiber.Ctx) error {
 	})
 }
 
-// GET /users/karyawan/active
+// GetActiveKaryawan godoc
+//
+//	@Summary		Get all active karyawan
+//	@Description	Mengambil semua data karyawan aktif
+//	@Tags			Karyawan
+//	@Security		BearerAuth
+//	@Produce		json
+//	@Success		200	{array}		models.User
+//	@Failure		500	{object}	map[string]interface{}
+//	@Router			/users/karyawan/active [get]
 func GetActiveKaryawan(c *fiber.Ctx) error {
 	// Kasir/driver juga boleh akses
 	users, err := repository.GetActiveKaryawan()
