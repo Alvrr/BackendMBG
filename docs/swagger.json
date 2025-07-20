@@ -78,7 +78,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "[ADMIN ONLY] Export semua data pembayaran ke file Excel",
+                "description": "Export semua data pembayaran ke file Excel",
                 "produces": [
                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 ],
@@ -827,12 +827,7 @@
         },
         "/users/drivers": {
             "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "[ALL ROLES] Mengambil semua data driver - untuk keperluan assignment pembayaran",
+                "description": "Mengambil semua data driver",
                 "produces": [
                     "application/json"
                 ],

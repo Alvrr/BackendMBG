@@ -42,9 +42,10 @@ import (
 //	@license.name	Apache 2.0
 //	@license.url	http://www.apache.org/licenses/LICENSE-2.0.html
 
-//	@host		localhost:5000
+//	@host		backendmbg-production.up.railway.app
 //	@BasePath	/
-//  @schemes http https
+//	@schemes	http https
+
 //	@securityDefinitions.apikey	BearerAuth
 //	@in							header
 //	@name						Authorization
