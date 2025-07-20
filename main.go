@@ -17,7 +17,7 @@ import (
 
 //	@title			Backend MBG API
 //	@version		1.0
-//	@description	API documentation untuk Backend MBG application.
+//	@description	API documentation untuk Backend MBG.
 //	@description
 //	@description	**Sistem Login:**
 //	@description	- Admin: restu129@gmail.com / restu123
@@ -44,7 +44,7 @@ import (
 
 //	@host		backendmbg-production.up.railway.app
 //	@BasePath	/
-//	@schemes	http https
+//	@schemes	https
 
 //	@securityDefinitions.apikey	BearerAuth
 //	@in							header
