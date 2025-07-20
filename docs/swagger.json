@@ -19,7 +19,7 @@
         },
         "version": "1.0"
     },
-    "host": "localhost:5000",
+    "host": "backendmbg-production.up.railway.app",
     "basePath": "/",
     "paths": {
         "/auth/login": {

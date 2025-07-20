@@ -139,7 +139,7 @@ definitions:
         description: aktif/nonaktif
         type: string
     type: object
-host: localhost:5000
+host: backendmbg-production.up.railway.app
 info:
   contact:
     email: support@swagger.io
@@ -159,9 +159,29 @@ info:
     - Format: Authorization: Bearer {token}
 
     **Role Permissions:**
-    - Admin: Akses penuh ke semua fitur
-    - Kasir: CRUD produk, pelanggan, pembayaran, lihat riwayat
-    - Driver: Lihat pembayaran assigned, update status selesai, cetak surat jalan
+    - **ADMIN**: Akses penuh ke semua fitur
+      - CRUD semua data (produk, pelanggan, pembayaran, karyawan)
+      - Akses laporan dan export Excel
+      - Manage status karyawan
+    
+    - **KASIR**: Akses terbatas ke data operasional
+      - CRUD produk dan pelanggan
+      - CRUD pembayaran (hanya data yang dibuat oleh kasir)
+      - Lihat riwayat pembayaran (hanya yang dibuat kasir)
+      - Tidak bisa akses data karyawan dan laporan
+    
+    - **DRIVER**: Akses read-only dan delivery operations
+      - Read-only produk dan pelanggan
+      - Lihat pembayaran yang di-assign ke driver
+      - Selesaikan pembayaran yang di-assign
+      - Cetak surat jalan untuk pengiriman
+      - Lihat riwayat pembayaran driver
+      - Tidak bisa edit/hapus data master
+
+    **Security Notes:**
+    - Sebelum login, tidak ada endpoint yang bisa diakses
+    - Semua endpoint dilindungi JWT middleware
+    - Role-based access control diterapkan di setiap endpoint
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
@@ -204,7 +224,7 @@ paths:
       - Authentication
   /laporan/excel:
     get:
-      description: Export semua data pembayaran ke file Excel
+      description: "[ADMIN ONLY] Export semua data pembayaran ke file Excel"
       produces:
       - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
       responses:
@@ -224,7 +244,7 @@ paths:
       - Laporan
   /pelanggan:
     get:
-      description: Mengambil semua data pelanggan
+      description: "[ADMIN/KASIR] Mengambil semua data pelanggan"
       produces:
       - application/json
       responses:
@@ -247,7 +267,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Membuat pelanggan baru
+      description: "[ADMIN/KASIR] Membuat pelanggan baru"
       parameters:
       - description: Customer data
         in: body
@@ -691,7 +711,7 @@ paths:
       - Riwayat
   /users/drivers:
     get:
-      description: Mengambil semua data driver
+      description: "[ALL ROLES] Mengambil semua data driver - untuk keperluan assignment pembayaran"
       produces:
       - application/json
       responses:
@@ -706,6 +726,8 @@ paths:
           schema:
             additionalProperties: true
             type: object
+      security:
+      - BearerAuth: []
       summary: Get all drivers
       tags:
       - Driver
