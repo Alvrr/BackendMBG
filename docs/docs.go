@@ -1463,7 +1463,7 @@ var SwaggerInfo = &swag.Spec{
 	BasePath:         "/",
 	Schemes:          []string{"https"},
 	Title:            "Backend MBG API",
-	Description:      "API documentation untuk Backend MBG.\n\n**Sistem Login:**\n- Admin: restu129@gmail.com / restu123\n- Kasir: kasir129@gmail.com / 123456\n- Driver: driver129@gmail.com / 123456\n\n**Authentication:**\n- Semua endpoint (kecuali login) memerlukan Bearer Token\n- Token didapat dari endpoint /auth/login\n- Format: Authorization: Bearer {token}\n\n**Role Permissions:**\n- Admin: Akses penuh ke semua fitur\n- Kasir: CRUD produk, pelanggan, pembayaran, lihat riwayat\n- Driver: Lihat pembayaran assigned, update status selesai, cetak surat jalan",
+	Description:      "API documentation untuk Backend GROSIR\n\n**Sistem Login:**\n- Admin: restu129@gmail.com / restu123\n- Kasir: kasir129@gmail.com / 123456\n- Driver: driver129@gmail.com / 123456\n\n**Authentication:**\n- Semua endpoint (kecuali login) memerlukan Bearer Token\n- Token didapat dari endpoint /auth/login\n- Format: Authorization: Bearer {token}\n\n**Role Permissions:**\n- Admin: Akses penuh ke semua fitur\n- Kasir: CRUD produk, pelanggan, pembayaran, lihat riwayat\n- Driver: Lihat pembayaran assigned, update status selesai, cetak surat jalan",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",
