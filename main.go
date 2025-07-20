@@ -96,3 +96,4 @@ func main() {
 	log.Println("🚀 Server jalan di http://localhost:" + port)
 	log.Fatal(app.Listen(":" + port))
 }
+
