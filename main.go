@@ -44,6 +44,7 @@ import (
 
 //	@host		localhost:5000
 //	@BasePath	/
+// @schemes http https
 
 //	@securityDefinitions.apikey	BearerAuth
 //	@in							header
