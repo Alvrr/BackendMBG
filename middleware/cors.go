@@ -7,9 +7,9 @@ import (
 
 func CorsMiddleware() fiber.Handler {
 	return cors.New(cors.Config{
-		AllowOrigins:     "https://frontend-mbg.vercel.app,https://backendmbg-production.up.railway.app,http://localhost:5000,https://localhost:5000", // Frontend + Railway domain + localhost untuk Swagger testing
-		AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
-		AllowMethods:     "GET,POST,PUT,DELETE",
-		AllowCredentials: true,
+		AllowOrigins:     "*", // Allow all origins untuk Swagger UI testing - bisa dipersempit setelah testing
+		AllowHeaders:     "Origin, Content-Type, Accept, Authorization, X-Requested-With",
+		AllowMethods:     "GET,POST,PUT,DELETE,PATCH,OPTIONS",
+		AllowCredentials: false, // Set false karena menggunakan wildcard origin
 	})
 }
